@@ -1,4 +1,5 @@
 using Gelato.Config;
+using Gelato.Helper;
 using Jellyfin.Data.Enums;
 using MediaBrowser.Controller.Collections;
 using MediaBrowser.Controller.Entities;
@@ -14,6 +15,7 @@ public class CatalogImportService(
     GelatoManager manager,
     CatalogService catalogService,
     ICollectionManager collectionManager,
+    CollectionsRootResolver collectionsRootResolver,
     ILibraryManager libraryManager)
 {
     private const string ProviderKey = "Stremio";
@@ -251,7 +253,7 @@ public class CatalogImportService(
                 {
                     IncludeItemTypes = [BaseItemKind.BoxSet],
                     CollapseBoxSetItems = false,
-                    Recursive = true,
+                    Recursive = false,
                     HasAnyProviderId = new Dictionary<string, string> { { ProviderKey, providerValue } },
                 }
             )
@@ -260,11 +262,22 @@ public class CatalogImportService(
 
         if (collection is null)
         {
+            var collectionsFolder = await collectionsRootResolver.GetOrCreateCollectionsParentAsync(ConfigurationHelper.GetCollectionsPath());
+            if (collectionsFolder is null)
+            {
+                logger.LogError("Configured collections library folder could not be retrieved! Collection for {CatalogName} will not be created!", config.Name);
+                return null;
+            }
+
+            //var collectionsFolder = await collectionManager.GetCollectionsFolder(createIfNeeded: true)
+            //    ?? throw new InvalidOperationException("Jellyfin collections folder not available.");
+
             collection = await collectionManager
                 .CreateCollectionAsync(
                     new CollectionCreationOptions
                     {
                         Name = $"{config.Name} {config.Type}",
+                        ParentId = collectionsFolder.Id, // Currently broken in Jellyfin, will not be used
                         IsLocked = true,
                         ProviderIds = new Dictionary<string, string> { { ProviderKey, providerValue } },
                     }
@@ -272,10 +285,16 @@ public class CatalogImportService(
                 .ConfigureAwait(false);
 
             collection.DisplayOrder = "Default";
+            // collection.ParentId = collectionsFolder.ParentId; --> This will crash Jellyfin
+
             await collection
                 .UpdateToRepositoryAsync(ItemUpdateType.MetadataEdit, CancellationToken.None)
                 .ConfigureAwait(false);
+
+            //collectionsFolder!.AddChild(collection);
+            //await collectionsFolder!.UpdateToRepositoryAsync(ItemUpdateType.MetadataEdit, CancellationToken.None); --> Doesn't work as it's not respected by Jellyfin (uses parent hierarchy)
         }
+
         return collection;
     }
 

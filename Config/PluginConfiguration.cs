@@ -10,6 +10,7 @@ public class PluginConfiguration : BasePluginConfiguration
 {
     public string MoviePath { get; set; } = Path.Combine(Path.GetTempPath(), "gelato", "movies");
     public string SeriesPath { get; set; } = Path.Combine(Path.GetTempPath(), "gelato", "series");
+    public string CollectionsPath { get; set; } = Path.Combine(Path.GetTempPath(), "gelato", "collections");
     public int StreamTTL { get; set; } = 3600;
     public int CatalogMaxItems { get; set; } = 100;
     public string Url { get; set; } = "";
@@ -67,6 +68,7 @@ public class UserConfig
     public string Url { get; set; } = "";
     public string MoviePath { get; set; } = "";
     public string SeriesPath { get; set; } = "";
+    public string CollectionsPath { get; set; } = "";
     public bool DisableSearch { get; set; } = false;
 
     /// <summary>
@@ -80,6 +82,7 @@ public class UserConfig
             Url = Url,
             MoviePath = MoviePath,
             SeriesPath = SeriesPath,
+            CollectionsPath = CollectionsPath,
             DisableSearch = DisableSearch,
 
             // All other fields from base config

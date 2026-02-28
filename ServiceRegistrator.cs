@@ -1,6 +1,7 @@
 using Gelato.Config;
 using Gelato.Decorators;
 using Gelato.Filters;
+using Gelato.Helper;
 using Gelato.Providers;
 using Gelato.Services;
 //using IntroDbPlugin.Services;
@@ -32,6 +33,7 @@ public class ServiceRegistrator : IPluginServiceRegistrator
         services.AddSingleton<DeleteResourceFilter>();
         services.AddSingleton<DownloadFilter>();
         services.AddSingleton<GelatoManager>();
+        services.AddSingleton<CollectionsRootResolver>();
         services.DecorateSingle<IItemRepository, GelatoItemRepository>();
         services.AddSingleton(sp => (GelatoItemRepository)sp.GetRequiredService<IItemRepository>());
         services.AddSingleton<GelatoStremioProviderFactory>();

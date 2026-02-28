@@ -35,57 +35,65 @@
 
           <!-- General Tab -->
           <div id="tab-general" class="tab-content" style="display: block;">
-            <h3 class="sectionTitle">General Settings</h3>
+              <h3 class="sectionTitle">General Settings</h3>
 
-            <div class="inputContainer">
-              <label class="inputLabel inputLabelUnfocused" for="txtUrl">AIOStreams URL (manifest or base):</label>
-              <input is="emby-input" type="text" id="txtUrl" required="required" class="emby-input" />
-              <div class="fieldDescription">Paste the manifest URL or base endpoint. <code>GetBaseUrl()</code> will
-                strip <code>/manifest.json</code> automatically.</div>
-            </div>
-
-            <div class="inputContainer">
-              <label class="inputLabel inputLabelUnfocused" for="txtMoviePath">Movies path:</label>
-              <input is="emby-input" type="text" id="txtMoviePath" class="emby-input" />
-              <div class="fieldDescription">Filesystem path for movie items. Use this path as library folder.</div>
-            </div>
-
-            <div class="inputContainer">
-              <label class="inputLabel inputLabelUnfocused" for="txtSeriesPath">Series path:</label>
-              <input is="emby-input" type="text" id="txtSeriesPath" class="emby-input" />
-              <div class="fieldDescription">Filesystem path for series items. Use this path as library folder.</div>
-            </div>
-       
-
-            <h3 class="sectionTitle" style="margin-top: 2em;">Search & Discovery</h3>
-
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input is="emby-checkbox" type="checkbox" id="chkEnableMixed" />
-                <span>Show streams for local items</span>
-              </label>
-            </div>
-
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input is="emby-checkbox" type="checkbox" id="chkDisableSearch" />
-                <span>Internal database search only (No remote requests)</span>
-              </label>
-            </div>
-
-            <div class="checkboxContainer checkboxContainer-withDescription" style="margin-bottom: 0.5em;">
-              <label>
-                <input is="emby-checkbox" type="checkbox" id="chkFilterUnreleased" />
-                <span>Filter unreleased items</span>
-              </label>
-            </div>
-
-            <div class="inputContainer">
-              <label class="inputLabel inputLabelUnfocused" for="txtBufferDays">Release buffer days:</label>
-              <input is="emby-input" type="number" id="txtBufferDays" class="emby-input" />
-              <div class="fieldDescription">Items released within these many days will be hidden if filter is enabled.
+              <div class="inputContainer">
+                  <label class="inputLabel inputLabelUnfocused" for="txtUrl">AIOStreams URL (manifest or base):</label>
+                  <input is="emby-input" type="text" id="txtUrl" required="required" class="emby-input" />
+                  <div class="fieldDescription">
+                      Paste the manifest URL or base endpoint. <code>GetBaseUrl()</code> will
+                      strip <code>/manifest.json</code> automatically.
+                  </div>
               </div>
-            </div>
+
+              <div class="inputContainer">
+                  <label class="inputLabel inputLabelUnfocused" for="txtMoviePath">Movies path:</label>
+                  <input is="emby-input" type="text" id="txtMoviePath" class="emby-input" />
+                  <div class="fieldDescription">Filesystem path for movie items. Use this path as library folder.</div>
+              </div>
+
+              <div class="inputContainer">
+                  <label class="inputLabel inputLabelUnfocused" for="txtSeriesPath">Series path:</label>
+                  <input is="emby-input" type="text" id="txtSeriesPath" class="emby-input" />
+                  <div class="fieldDescription">Filesystem path for series items. Use this path as library folder.</div>
+              </div>
+
+              <div class="inputContainer">
+                  <label class="inputLabel inputLabelUnfocused" for="txtCollectionsPath">Collections path:</label>
+                  <input is="emby-input" type="text" id="txtCollectionsPath" class="emby-input" />
+                  <div class="fieldDescription">Filesystem path for collection items.</div>
+              </div>
+
+              <h3 class="sectionTitle" style="margin-top: 2em;">Search & Discovery</h3>
+
+              <div class="checkboxContainer checkboxContainer-withDescription">
+                  <label>
+                      <input is="emby-checkbox" type="checkbox" id="chkEnableMixed" />
+                      <span>Show streams for local items</span>
+                  </label>
+              </div>
+
+              <div class="checkboxContainer checkboxContainer-withDescription">
+                  <label>
+                      <input is="emby-checkbox" type="checkbox" id="chkDisableSearch" />
+                      <span>Internal database search only (No remote requests)</span>
+                  </label>
+              </div>
+
+              <div class="checkboxContainer checkboxContainer-withDescription" style="margin-bottom: 0.5em;">
+                  <label>
+                      <input is="emby-checkbox" type="checkbox" id="chkFilterUnreleased" />
+                      <span>Filter unreleased items</span>
+                  </label>
+              </div>
+
+              <div class="inputContainer">
+                  <label class="inputLabel inputLabelUnfocused" for="txtBufferDays">Release buffer days:</label>
+                  <input is="emby-input" type="number" id="txtBufferDays" class="emby-input" />
+                  <div class="fieldDescription">
+                      Items released within these many days will be hidden if filter is enabled.
+                  </div>
+              </div>
           </div>
 
           <!-- Catalogs Tab -->
@@ -256,6 +264,7 @@
         const txtUrl = page.querySelector('#txtUrl');
         const txtMoviePath = page.querySelector('#txtMoviePath');
         const txtSeriesPath = page.querySelector('#txtSeriesPath');
+        const txtCollectionsPath = page.querySelector('#txtCollectionsPath');
         const txtMaxCollectionItems = page.querySelector('#txtMaxCollectionItems');
 
         const txtStreamTTL = page.querySelector('#txtStreamTTL');
@@ -535,6 +544,7 @@
             if (txtUrl) txtUrl.value = cfg.Url || "";
             if (txtMoviePath) txtMoviePath.value = cfg.MoviePath || "";
             if (txtSeriesPath) txtSeriesPath.value = cfg.SeriesPath || "";
+            if (txtCollectionsPath) txtCollectionsPath.value = cfg.CollectionsPath || "";
             if (txtMaxCollectionItems) txtMaxCollectionItems.value = cfg.MaxCollectionItems || 100;
             if (txtStreamTTL) txtStreamTTL.value = cfg.StreamTTL || 3600;
             if (chkEnableMixed) chkEnableMixed.checked = cfg.EnableMixed ?? true;
@@ -563,10 +573,11 @@
             cfg.Url = txtUrl.value.trim();
             cfg.MoviePath = txtMoviePath.value.trim();
             cfg.SeriesPath = txtSeriesPath.value.trim();
+            cfg.CollectionsPath = txtCollectionsPath.value.trim();
 
             // Max collection items
             cfg.MaxCollectionItems = parseInt(txtMaxCollectionItems.value) || 100;
-            
+
             // Stream TTL
             cfg.StreamTTL = parseInt(txtStreamTTL.value) || 3600;
             cfg.EnableMixed = chkEnableMixed.checked;
@@ -596,6 +607,7 @@
               Url: override.Url,
               MoviePath: override.MoviePath,
               SeriesPath: override.SeriesPath,
+              CollectionsPath: override.CollectionsPath,
               DisableSearch: override.DisableSearch
             }));
 
@@ -611,6 +623,7 @@
                 Url: userConfig.Url,
                 MoviePath: userConfig.MoviePath,
                 SeriesPath: userConfig.SeriesPath,
+                CollectionsPath: userConfig.CollectionsPath,
                 DisableSearch: userConfig.DisableSearch
               };
             });
@@ -703,12 +716,14 @@
             txtUserUrl.value = override.Url || '';
             txtUserMoviePath.value = override.MoviePath || '';
             txtUserSeriesPath.value = override.SeriesPath || '';
+            txtUserCollectionsPath.value = override.CollectionsPath || '';
             chkUserDisableSearch.checked = override.DisableSearch || false;
           } else {
             // New
             txtUserUrl.value = currentConfig?.Url || '';
             txtUserMoviePath.value = currentConfig?.MoviePath || '';
             txtUserSeriesPath.value = currentConfig?.SeriesPath || '';
+            txtUserCollectionsPath.value = currentConfig?.CollectionsPath || '';
             chkUserDisableSearch.checked = false;
           }
         }
@@ -727,6 +742,7 @@
             Url: txtUserUrl.value.trim(),
             MoviePath: txtUserMoviePath.value.trim(),
             SeriesPath: txtUserSeriesPath.value.trim(),
+            CollectionsPath: txtUserCollectionsPath.value.trim(),
             DisableSearch: chkUserDisableSearch.checked
           };
 

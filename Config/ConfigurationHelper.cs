@@ -13,5 +13,10 @@ namespace Gelato.Config
         {
             return GelatoPlugin.Instance!.GetConfig(userId ?? Guid.Empty);
         }
+
+        public static string GetCollectionsPath()
+        {
+            return GelatoPlugin.Instance!.Configuration.CollectionsPath;
+        }
     }
 }
